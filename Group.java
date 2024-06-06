@@ -18,12 +18,13 @@ public class Group {
         return characters;
     }
 
-    public String getRestCharacters() {
-        StringBuilder restCharacters = new StringBuilder();
-        for (Character character : characters) {
-            restCharacters.append(character.LABEL);
-        }
-        return restCharacters.toString();
+    public List<Character> getRestCharacters() {
+        // StringBuilder restCharacters = new StringBuilder();
+        // for (Character character : characters) {
+        //     restCharacters.append(character.LABEL);
+        // }
+        // return restCharacters.toString();
+        return characters;
     }
 
     public boolean isDefeated() {
