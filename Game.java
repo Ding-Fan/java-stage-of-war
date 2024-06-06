@@ -15,16 +15,16 @@ public class Game {
         for (char c : groupString.toCharArray()) {
             switch (c) {
                 case 'A':
-                    group.addCharacter(new Character("A", 4, 1, 2));
+                    group.addCharacter(new Character("Warrior", 4, 1, 2));
                     break;
                 case 'B':
-                    group.addCharacter(new Character("B", 3, 3, 3));
+                    group.addCharacter(new Character("Wizard", 3, 3, 3));
                     break;
                 case 'C':
-                    group.addCharacter(new Character("C", 10, 0, 5));
+                    group.addCharacter(new Character("Tank", 10, 0, 4));
                     break;
                 case 'D':
-                    group.addCharacter(new Character("D", 2, 0, 10));
+                    group.addCharacter(new Character("Assassin", 2, 0, 10));
                     break;
             }
         }
@@ -50,38 +50,49 @@ public class Game {
             // show the characters in each group
             this.showStatus();
 
-            System.out.println(
-                    "\nBlue (" + blueCharacter.LABEL + ") and Purple (" + purpleCharacter.LABEL + ") are in battle!\n");
+            try {
+                System.out.println(
+                        "\nBlue [" + blueCharacter.LABEL + "] and Purple [" + purpleCharacter.LABEL
+                                + "] are in battle!\n");
+                Thread.sleep(1000);
 
-            System.out.println("Blue (" + blueCharacter.LABEL + ") health: " + blueCharacter.getHealth());
-            int blueAttack = blueCharacter.attack();
-            System.out.println("Blue (" + blueCharacter.LABEL + ") attacks for " + blueAttack + " damage!\n");
+                System.out.println("Blue [" + blueCharacter.LABEL + "] health: " + blueCharacter.getHealth());
+                int blueAttack = blueCharacter.attack();
+                System.out.println("Blue [" + blueCharacter.LABEL + "] attacks for " + blueAttack + " damage!\n");
+                Thread.sleep(700);
 
-            System.out.println("Purple (" + purpleCharacter.LABEL + ") health: " + purpleCharacter.getHealth());
-            int purpleAttack = purpleCharacter.attack();
-            System.out.println("Purple (" + purpleCharacter.LABEL + ") attacks for " + purpleAttack + " damage!\n");
+                System.out.println("Purple [" + purpleCharacter.LABEL + "] health: " + purpleCharacter.getHealth());
+                int purpleAttack = purpleCharacter.attack();
+                System.out.println("Purple [" + purpleCharacter.LABEL + "] attacks for " + purpleAttack + " damage!\n");
+                Thread.sleep(700);
 
-            blueCharacter.setHealth(blueCharacter.getHealth() - purpleAttack);
-            purpleCharacter.setHealth(purpleCharacter.getHealth() - blueAttack);
+                blueCharacter.setHealth(blueCharacter.getHealth() - purpleAttack);
+                purpleCharacter.setHealth(purpleCharacter.getHealth() - blueAttack);
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+
+
 
             if (purpleCharacter.getHealth() <= 0) {
                 purpleGroup.getCharacters().remove(purpleCharacter);
-                System.out.println("Purple (" + purpleCharacter.LABEL + ") defeated!");
+                System.out.println("Purple [" + purpleCharacter.LABEL + "] defeated!");
             }
 
             if (blueCharacter.getHealth() <= 0) {
                 blueGroup.getCharacters().remove(blueCharacter);
-                System.out.println("Blue (" + blueCharacter.LABEL + ") defeated!");
+                System.out.println("Blue [" + blueCharacter.LABEL + "] defeated!");
             }
 
             if (blueGroup.isDefeated() && purpleGroup.isDefeated()) {
                 System.out.println("\nIt's a draw!");
                 break;
             } else if (blueGroup.isDefeated()) {
-                System.out.println("\nBlue group defeated! Victory for Purple group!");
+                System.out.println("\nBlue group defeated!\nVictory for\n\nPurple group!\n\n");
                 break;
             } else if (purpleGroup.isDefeated()) {
-                System.out.println("\nPurple group defeated! Victory for Blue group!");
+                System.out.println("\nPurple group defeated!\nVictory for\n\nBlue group!\n\n");
                 break;
             }
 
@@ -110,12 +121,25 @@ public class Game {
     }
 
     public void showStatus() {
+        List<Character> blueCharacters = blueGroup.getCharacters();
+        String blueGroupString = "Blue Group: [" + blueCharacters.get(0).LABEL + "]" + (blueCharacters.size() > 1 ? ", " : "");
+        for (int counter = 1; counter < blueCharacters.size(); counter++) {
+            blueGroupString = blueGroupString
+                    + blueCharacters.get(counter).LABEL
+                    + (counter == blueCharacters.size() - 1 ? "" : ", ");
+        }
         System.out
-                .println("Blue Group: (" + blueGroup.getRestCharacters().charAt(0) + ")"
-                        + blueGroup.getRestCharacters().substring(1));
+                .println(blueGroupString);
+
+        List<Character> purpleCharacters = purpleGroup.getCharacters();
+        String purpleGroupString = "Purple Group: [" + purpleCharacters.get(0).LABEL + "]" + (purpleCharacters.size() > 1 ? ", " : "");
+        for (int counter = 1; counter < purpleCharacters.size(); counter++) {
+            purpleGroupString = purpleGroupString
+                    + purpleCharacters.get(counter).LABEL
+                    + (counter == purpleCharacters.size() - 1 ? "" : ", ");
+        }
         System.out
-                .println("Purple Group: (" + purpleGroup.getRestCharacters().charAt(0) + ")"
-                        + purpleGroup.getRestCharacters().substring(1));
+                .println(purpleGroupString);
     }
 
     private void applyRandomEvent() {
