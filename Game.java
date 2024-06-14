@@ -15,19 +15,19 @@ public class Game {
         for (char c : groupString.toCharArray()) {
             switch (c) {
                 case 'A':
-                    group.addCharacter(new Character("Warrior", 5, 1, 3));
+                    group.addCharacter(new Warrior());
                     break;
                 case 'B':
-                    group.addCharacter(new Character("Wizard", 4, 4, 4));
+                    group.addCharacter(new Wizard());
                     break;
                 case 'C':
-                    group.addCharacter(new Character("Monk", 9, 1, 4));
+                    group.addCharacter(new Monk());
                     break;
                 case 'D':
-                    group.addCharacter(new Character("Assassin", 1, 0, 12));
+                    group.addCharacter(new Assassin());
                     break;
                 case 'E':
-                    group.addCharacter(new Character("Giant", 15, 1, 3));
+                    group.addCharacter(new Giant());
                     break;
             }
         }
@@ -36,6 +36,7 @@ public class Game {
     public void start() {
         Scanner scanner = new Scanner(System.in);
         boolean gameRunning = true;
+        boolean isDuel = false;
 
         while (gameRunning) {
             // Battle logic
@@ -47,6 +48,61 @@ public class Game {
             Character blueCharacter = blueGroup.getCharacters().get(0);
             Character purpleCharacter = purpleGroup.getCharacters().get(0);
 
+            int blueAttack = blueCharacter.attack();
+            int purpleAttack = purpleCharacter.attack();
+
+            Character blueNextCharacter = null;
+            if (blueGroup.getCharacters().size() > 1) {
+                blueNextCharacter = blueGroup.getCharacters().get(1);
+            }
+
+            Character purpleNextCharacter = null;
+            if (purpleGroup.getCharacters().size() > 1) {
+                purpleNextCharacter = purpleGroup.getCharacters().get(1);
+            }
+
+            System.out.println();
+            if (blueNextCharacter != null && blueNextCharacter.label.equals(Wizard.LABEL)) {
+                blueAttack = blueAttack + 1;
+                System.out.println("--------");
+                System.out.println("Blue " + blueNextCharacter.label + ": You are powered up, get in there!");
+                System.out.println("Blue " + blueCharacter.label + " attack +1");
+                System.out.println();
+            }
+            if (purpleNextCharacter != null && purpleNextCharacter.label.equals(Wizard.LABEL)) {
+                purpleAttack = purpleAttack + 1;
+                System.out.println("--------");
+                System.out.println("Purple " + purpleNextCharacter.label + ": You are powered up, get in there!");
+                System.out.println("Purple " + purpleCharacter.label + " attack +1");
+                System.out.println();
+            }
+
+            if (blueNextCharacter == null
+                    && purpleNextCharacter == null
+                    && blueCharacter.label.equals(Warrior.LABEL)
+                    && purpleCharacter.label.equals(Warrior.LABEL)) {
+
+                isDuel = true;
+
+                System.out.println("------------");
+                System.out.println("------------");
+                System.out.println("Special Scene: THE LAST WARRIOR");
+                System.out.println("------------");
+                System.out.println("------------");
+
+                try {
+
+                    System.out.println();
+                    System.out.println("Duel...");
+                    Thread.sleep(1000);
+
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    e.printStackTrace();
+                }
+
+            }
+
             // divider
             System.out.println("\n----------------------------------------\n");
 
@@ -55,17 +111,15 @@ public class Game {
 
             try {
                 System.out.println(
-                        "\nBlue [" + blueCharacter.LABEL + "] and Purple [" + purpleCharacter.LABEL
+                        "\nBlue [" + blueCharacter.label + "] and Purple [" + purpleCharacter.label
                                 + "] are in battle!\n");
                 Thread.sleep(1000);
 
-                System.out.println("Blue [" + blueCharacter.LABEL + "] health: " + blueCharacter.getHealth());
-                int blueAttack = blueCharacter.attack();
-                System.out.println("Blue [" + blueCharacter.LABEL + "] attacks for " + blueAttack + " damage!");
+                System.out.println("Blue [" + blueCharacter.label + "] health: " + blueCharacter.getHealth());
+                System.out.println("Blue [" + blueCharacter.label + "] attacks for " + blueAttack + " damage!");
                 Thread.sleep(700);
-                System.out.println("Purple [" + purpleCharacter.LABEL + "] health: " + purpleCharacter.getHealth());
-                int purpleAttack = purpleCharacter.attack();
-                System.out.println("Purple [" + purpleCharacter.LABEL + "] attacks for " + purpleAttack + " damage!\n");
+                System.out.println("Purple [" + purpleCharacter.label + "] health: " + purpleCharacter.getHealth());
+                System.out.println("Purple [" + purpleCharacter.label + "] attacks for " + purpleAttack + " damage!\n");
                 Thread.sleep(700);
 
                 if (isMonkAndWizard(blueCharacter, purpleCharacter)) {
@@ -85,17 +139,39 @@ public class Game {
                     }
                 }
 
+                if (isDuel) {
+                    if (blueAttack == purpleAttack) {
+                        System.out.println();
+                        System.out.println("Deflect!");
+                        blueAttack = 0;
+                        purpleAttack = 0;
+                        System.out.println();
+                    } else if (blueAttack > purpleAttack) {
+                        System.out.println();
+                        System.out.println("Blue " + blueCharacter.label + ": Too slow!");
+                        blueAttack = blueAttack + purpleAttack;
+                        purpleAttack = 0;
+                        System.out.println();
+                    } else if (blueAttack < purpleAttack) {
+                        System.out.println();
+                        System.out.println("Purple " + purpleCharacter.label + ": Too slow!");
+                        purpleAttack = purpleAttack + blueAttack;
+                        blueAttack = 0;
+                        System.out.println();
+                    }
+                }
+
                 int blueCurrentHealth = blueCharacter.getHealth();
                 int blueNextHealth = blueCharacter.getHealth() - purpleAttack;
                 int purpleCurrentHealth = purpleCharacter.getHealth();
                 int purpleNextHealth = purpleCharacter.getHealth() - blueAttack;
 
-                System.out.println("Blue " + blueCharacter.LABEL + " health: ");
+                System.out.println("Blue " + blueCharacter.label + " health: ");
                 System.out.println(
                         blueCurrentHealth + "->" + blueNextHealth);
                 blueCharacter.setHealth(blueNextHealth);
 
-                System.out.println("Purple " + purpleCharacter.LABEL + " health: ");
+                System.out.println("Purple " + purpleCharacter.label + " health: ");
                 System.out.println(
                         purpleCurrentHealth + "->" + purpleNextHealth);
                 purpleCharacter.setHealth(purpleNextHealth);
@@ -107,12 +183,12 @@ public class Game {
 
             if (purpleCharacter.getHealth() <= 0) {
                 purpleGroup.getCharacters().remove(purpleCharacter);
-                System.out.println("Purple [" + purpleCharacter.LABEL + "] defeated!");
+                System.out.println("Purple [" + purpleCharacter.label + "] defeated!");
             }
 
             if (blueCharacter.getHealth() <= 0) {
                 blueGroup.getCharacters().remove(blueCharacter);
-                System.out.println("Blue [" + blueCharacter.LABEL + "] defeated!");
+                System.out.println("Blue [" + blueCharacter.label + "] defeated!");
             }
 
             if (blueGroup.isDefeated() && purpleGroup.isDefeated()) {
@@ -130,6 +206,12 @@ public class Game {
             System.out.println();
             this.showStatus();
 
+            System.out.println();
+            System.out.println();
+            System.out.println("================================");
+            System.out.println("================================");
+            System.out.println("================================");
+            System.out.println("================================");
             System.out.println("\nPress Enter to continue...");
             scanner.nextLine();
 
@@ -151,16 +233,16 @@ public class Game {
     }
 
     private boolean isMonkAndWizard(Character blueCharacter, Character purpleCharacter) {
-        return (blueCharacter.LABEL.equals("Monk") && purpleCharacter.LABEL.equals("Wizard"))
-                || (blueCharacter.LABEL.equals("Wizard") && purpleCharacter.LABEL.equals("Monk"));
+        return (blueCharacter.label.equals("Monk") && purpleCharacter.label.equals("Wizard"))
+                || (blueCharacter.label.equals("Wizard") && purpleCharacter.label.equals("Monk"));
     }
 
     private int[] handleReflection(Character blueCharacter, Character purpleCharacter, int blueAttack,
             int purpleAttack) {
-        if (blueCharacter.LABEL.equals("Monk") && purpleCharacter.LABEL.equals("Wizard")) {
+        if (blueCharacter.label.equals("Monk") && purpleCharacter.label.equals("Wizard")) {
             blueAttack = 2;
             purpleAttack = 0;
-        } else if (blueCharacter.LABEL.equals("Wizard") && purpleCharacter.LABEL.equals("Monk")) {
+        } else if (blueCharacter.label.equals("Wizard") && purpleCharacter.label.equals("Monk")) {
             blueAttack = 0;
             purpleAttack = 2;
         }
@@ -170,10 +252,10 @@ public class Game {
 
     private int[] handleFellAsleep(Character blueCharacter, Character purpleCharacter, int blueAttack,
             int purpleAttack) {
-        if (blueCharacter.LABEL.equals("Monk") && purpleCharacter.LABEL.equals("Wizard")) {
+        if (blueCharacter.label.equals("Monk") && purpleCharacter.label.equals("Wizard")) {
             blueAttack = 0;
             purpleAttack = purpleAttack * 2;
-        } else if (blueCharacter.LABEL.equals("Wizard") && purpleCharacter.LABEL.equals("Monk")) {
+        } else if (blueCharacter.label.equals("Wizard") && purpleCharacter.label.equals("Monk")) {
             purpleAttack = 0;
             blueAttack = blueAttack * 2;
         }
@@ -183,22 +265,22 @@ public class Game {
 
     public void showStatus() {
         List<Character> blueCharacters = blueGroup.getCharacters();
-        String blueGroupString = "Blue Group: [" + blueCharacters.get(0).LABEL + "]"
+        String blueGroupString = "Blue Group: [" + blueCharacters.get(0).label + "]"
                 + (blueCharacters.size() > 1 ? ", " : "");
         for (int counter = 1; counter < blueCharacters.size(); counter++) {
             blueGroupString = blueGroupString
-                    + blueCharacters.get(counter).LABEL
+                    + blueCharacters.get(counter).label
                     + (counter == blueCharacters.size() - 1 ? "" : ", ");
         }
         System.out
                 .println(blueGroupString);
 
         List<Character> purpleCharacters = purpleGroup.getCharacters();
-        String purpleGroupString = "Purple Group: [" + purpleCharacters.get(0).LABEL + "]"
+        String purpleGroupString = "Purple Group: [" + purpleCharacters.get(0).label + "]"
                 + (purpleCharacters.size() > 1 ? ", " : "");
         for (int counter = 1; counter < purpleCharacters.size(); counter++) {
             purpleGroupString = purpleGroupString
-                    + purpleCharacters.get(counter).LABEL
+                    + purpleCharacters.get(counter).label
                     + (counter == purpleCharacters.size() - 1 ? "" : ", ");
         }
         System.out

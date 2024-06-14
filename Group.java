@@ -21,7 +21,7 @@ public class Group {
     public List<Character> getRestCharacters() {
         // StringBuilder restCharacters = new StringBuilder();
         // for (Character character : characters) {
-        //     restCharacters.append(character.LABEL);
+        // restCharacters.append(character.label);
         // }
         // return restCharacters.toString();
         return characters;

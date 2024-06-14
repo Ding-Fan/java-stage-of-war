@@ -1,11 +1,10 @@
 public class Character {
-    public final String LABEL;
-    private int health;
-    private int attackMin;
-    private int attackMax;
+    protected int health;
+    protected int attackMin;
+    protected int attackMax;
+    protected String label;
 
-    public Character(String label, int health, int attackMin, int attackMax) {
-        this.LABEL = label;
+    public Character(int health, int attackMin, int attackMax) {
         this.health = health;
         this.attackMin = attackMin;
         this.attackMax = attackMax;
